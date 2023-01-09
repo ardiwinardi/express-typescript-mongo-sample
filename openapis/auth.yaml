@@ -1,0 +1,126 @@
+openapi: 3.0.3
+info:
+  title: Auth Service
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: auth
+    description: Auth API
+paths:
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Logs user into the system
+      description: ''
+      operationId: loginUser
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: successful operation
+          headers: 
+            Set-Cookie:
+              schema: 
+                type: string
+                example: Authorization=abcde12345; Path=/; HttpOnly
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Invalid username/password supplied
+  /auth/signup:
+    post:
+      tags:
+        - auth
+      summary: Signup user
+      operationId: signUp
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /auth/logout:
+    get:
+      tags:
+        - auth
+      summary: Logs out current logged in user session
+      description: ''
+      operationId: logoutUser
+      security: 
+        - bearer_auth: []
+      parameters: []
+      responses:
+        default:
+          description: successful operation        
+  /auth/forgot-password:
+    post:
+      tags:
+        - auth
+      summary: Forgot password request
+      operationId: forgotPassowrd
+      requestBody:
+        description: Forgot password request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+      responses:
+        default:
+          description: successful operation
+  
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+          example: john@email.com
+        name:
+          type: string
+          example: John        
+        password:
+          type: string
+          example: '12345'   
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: John        
+        password:
+          type: string
+          example: '12345'
+    ForgotPasswordRequest:
+      type: object
+      properties:
+        password:
+          type: string
+          example: secret        
+        oldPassword:
+          type: string
+          example: secret123
+        passwordConfirmation:
+          type: string
+          example: secret123
+
+  securitySchemes:
+    bearer_auth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT  

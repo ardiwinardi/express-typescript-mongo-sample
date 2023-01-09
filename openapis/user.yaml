@@ -1,0 +1,154 @@
+openapi: 3.0.3
+info:
+  title: User Service
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: user
+    description: Operations about user
+paths:
+  /users:
+    get:
+      tags:
+        - user
+      summary: Get all users
+      description: ''
+      operationId: getAllUser
+      security: 
+        - bearer_auth: []
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid userId supplied
+        '404':
+          description: User not found  
+    post:
+      tags:
+        - user
+      summary: Create user
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      security: 
+        - bearer_auth: []
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /users/{userId}:
+    get:
+      tags:
+        - user
+      summary: Get user by user name
+      description: ''
+      operationId: getUserById
+      security: 
+        - bearer_auth: []
+      parameters:
+        - name: userId
+          in: path
+          description: 'The name that needs to be fetched. Use user1 for testing. '
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid userId supplied
+        '404':
+          description: User not found
+    put:
+      tags:
+        - user
+      summary: Update user
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      security: 
+        - bearer_auth: []
+      parameters:
+        - name: userId
+          in: path
+          description: name that need to be deleted
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent user in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        default:
+          description: successful operation
+    delete:
+      tags:
+        - user
+      summary: Delete user
+      description: This can only be done by the logged in user.
+      operationId: deleteUser
+      security: 
+        - bearer_auth: []
+      parameters:
+        - name: userId
+          in: path
+          description: The name that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid userId supplied
+        '404':
+          description: User not found
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+          example: john@email.com
+        name:
+          type: string
+          example: John        
+        password:
+          type: string
+          example: '12345'   
+        passwordConfirmation:
+          type: string
+          example: '12345'   
+    
+  securitySchemes:
+    bearer_auth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: sample token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2I3OGJkMjJhYzI2ZGQ2NjJhMjNiZGIiLCJpYXQiOjE2NzMyNTAyMTYsImV4cCI6MTY3MzI1MzgxNn0.Ej5DCy-FgTOQS5ql_3jXFOF_yxRnrQsMmLi2YDGTius 
